@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ru.evgenii.metricsconsumer.dto.MetricDto;
 import ru.evgenii.metricsconsumer.dto.EndpointsHitsDto;
+import ru.evgenii.metricsconsumer.exception.ErrorResponse;
 import ru.evgenii.metricsconsumer.service.StatsService;
 
 import java.util.List;
@@ -42,6 +43,7 @@ public class StatsController {
     @Operation(summary = "Получение списка всех метрик",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Успешное выполнение", content = @Content(schema = @Schema(implementation = MetricDto.class))),
+                    @ApiResponse(responseCode = "400", description = "Неверный запрос", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             })
     public MetricDto getMetricById(@PathVariable(value = "id") long id) {
         return statsService.getById(id);
