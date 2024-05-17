@@ -1,5 +1,9 @@
 package ru.evgenii.metricsconsumer.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,18 +26,33 @@ public class StatsController {
 
     @GetMapping("/hits")
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Получение статистики по каждому эндпоинту.",
+            description = "Показывает сколько всего раз пользователи " +
+                    "воспользовались эндпоинтом. Если установить параметр unique=true, то будут показаны только " +
+                    "уникальные вызовы эндпоинта от пользователей.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Успешное выполнение", content = @Content(schema = @Schema(implementation = EndpointsHitsDto.class)))
+            })
     public List<EndpointsHitsDto> getEndpointsHits(@RequestParam(value = "unique", defaultValue = "false") boolean unique) {
         return statsService.getEndpointsHits(unique);
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Получение списка всех метрик",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Успешное выполнение", content = @Content(schema = @Schema(implementation = MetricDto.class))),
+            })
     public MetricDto getMetricById(@PathVariable(value = "id") long id) {
         return statsService.getById(id);
     }
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Получение метрики по id",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Успешное выполнение", content = @Content(schema = @Schema(implementation = MetricDto.class)))
+            })
     public List<MetricDto> getMetrics() {
         return statsService.getAll();
     }

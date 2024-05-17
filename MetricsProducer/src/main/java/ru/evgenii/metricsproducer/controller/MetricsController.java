@@ -1,5 +1,7 @@
 package ru.evgenii.metricsproducer.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -20,14 +22,22 @@ public class MetricsController {
     private final DataLoader dataLoader;
 
     @PostMapping("/metrics")
+    @Operation(summary = "Отправить метрику в Kafka",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Json сообщение отправлено в топик Kafka")
+            })
     public ResponseEntity<String> sendMetrics(@RequestBody RequestHitDto requestHitDto) {
         metricsProducerService.send(requestHitDto);
         return ResponseEntity.ok("Json сообщение отправлено в топик Kafka");
     }
 
     @GetMapping("/metrics")
+    @Operation(summary = "Отправить тестовые данные в Kafka",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Тестовые данные отправлены в Kafka")
+            })
     public ResponseEntity<String> testData() {
         dataLoader.run();
-        return ResponseEntity.ok("Тестовые данные отправлены");
+        return ResponseEntity.ok("Тестовые данные отправлены в Kafka");
     }
 }
